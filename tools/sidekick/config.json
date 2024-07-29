@@ -2,6 +2,17 @@
   "project": "Creative Cloud",
   "plugins": [
     {
+      "id": "path",
+      "title": "Path",
+      "environments": [ "edit" ],
+      "url": "https://milo.adobe.com/tools/path-finder",
+      "isPalette": true,
+      "passReferrer": true,
+      "passConfig": true,
+      "paletteRect": "top: 50%; left: 50%; transform: translate(-50%,-50%); height: 84px; width: 900px; overflow: hidden; border-radius: 6px; box-shadow: 0 20px 35px 0px rgba(0, 0, 0, 0.5);",
+      "includePaths": [ "**.docx**", "**.xlsx**" ]
+    },
+    {
       "id": "library",
       "title": "Library",
       "environments": [ "edit" ],
@@ -39,8 +50,9 @@
       "id": "floodgate",
       "title": "Floodgate",
       "environments": [ "edit" ],
-      "url": "https://main--milo--adobecom.hlx.page/tools/floodgate/index.html?project=cc--adobecom",
+      "url": "https://main--cc--adobecom.hlx.page/tools/floodgate?milolibs=floodgateui",
       "passReferrer": true,
+      "passConfig": true,
       "includePaths": [ "**/:x**" ]
     },
     {
@@ -134,6 +146,13 @@
       "url": "https://milo.adobe.com/tools/faas",
       "isPalette": false,
       "includePaths": [ "**.docx**"]
+    },
+    {
+      "containerId": "tools",
+      "id": "bulk",
+      "title": "Bulk operations",
+      "environments": [ "edit", "dev", "preview", "live" ],
+      "url": "https://main--cc--adobecom.hlx.page/tools/bulk-publish"
     }
   ]
 }

@@ -10,7 +10,10 @@
  * governing permissions and limitations under the License.
  */
 
-import { setLibs } from './utils.js';
+import { setLibs, decorateArea, acomsisCookieHandler } from './utils.js';
+
+// For CN home's acomsis cookie handler
+const CHINA_SIGNED_IN_HOME_PATH = '/cn/creativecloud/roc/home';
 
 // Add project-wide style path here.
 const STYLES = '/creativecloud/styles/styles.css';
@@ -92,7 +95,7 @@ const locales = {
   sg: { ietf: 'en-SG', tk: 'pps7abe.css' },
   th_en: { ietf: 'en', tk: 'pps7abe.css' },
   in_hi: { ietf: 'hi', tk: 'aaa8deh.css' },
-  th_th: { ietf: 'th', tk: 'aaz7dvd.css' },
+  th_th: { ietf: 'th', tk: 'lqo2bst.css' },
   cn: { ietf: 'zh-CN', tk: 'puu3xkp' },
   hk_zh: { ietf: 'zh-HK', tk: 'jay0ecd' },
   tw: { ietf: 'zh-TW', tk: 'jay0ecd' },
@@ -114,6 +117,10 @@ const locales = {
   kw_en: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Kuwait (GB English)
   qa_en: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Qatar (GB English)
   gr_el: { ietf: 'el', tk: 'fnx0rsr.css' }, // Greece (Greek)
+  vn_en: { ietf: 'en-GB', tk: 'hah7vzn.css' },
+  vn_vi: { ietf: 'vi', tk: 'qxw8hzm.css' },
+  cis_ru: { ietf: 'ru', tk: 'qxw8hzm.css' },
+  cis_en: { ietf: 'en', tk: 'pps7abe.css' },
 };
 
 // Add any config options.
@@ -123,12 +130,14 @@ const CONFIG = {
   imsClientId: 'adobedotcom-cc',
   locales,
   geoRouting: 'on',
-  prodDomains: ['www.adobe.com'],
+  prodDomains: ['www.adobe.com', 'helpx.adobe.com', 'business.adobe.com'],
+  decorateArea,
   stage: {
     marTechUrl: 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.min.js',
     edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
-    pdfViewerClientId: '8d2de6a43c194397933c3d41f6dadef5',
+    pdfViewerClientId: '9f7f19a46bd542e2b8548411e51eb4d4',
     pdfViewerReportSuite: 'adbadobenonacdcqa',
+    psUrl: 'https://stage.photoshop.adobe.com',
   },
   live: {
     pdfViewerClientId: 'a26c77a2effb4c4aaa71e7c46385e0ed',
@@ -139,19 +148,18 @@ const CONFIG = {
     edgeConfigId: '2cba807b-7430-41ae-9aac-db2b0da742d5',
     pdfViewerClientId: '409019ebd2d546c0be1a0b5a61fe65df',
     pdfViewerReportSuite: 'adbadobenonacdcprod',
+    psUrl: 'https://photoshop.adobe.com',
   },
   jarvis: {
     id: 'adobedotcom2',
     version: '1.83',
     onDemand: false,
   },
+  htmlExclude: [
+    /www\.adobe\.com\/(\w\w(_\w\w)?\/)?express(\/.*)?/,
+    /www\.adobe\.com\/(\w\w(_\w\w)?\/)?go(\/.*)?/,
+  ],
 };
-
-// Load LCP image immediately
-(async function loadLCPImage() {
-  const lcpImg = document.querySelector('img');
-  lcpImg?.removeAttribute('loading');
-}());
 
 /*
  * ------------------------------------------------------------
@@ -159,7 +167,13 @@ const CONFIG = {
  * ------------------------------------------------------------
  */
 
+const isSignedInHomepage = window.location.pathname.includes(CHINA_SIGNED_IN_HOME_PATH);
 const miloLibs = setLibs(LIBS);
+const { loadArea, setConfig, loadLana } = await import(`${miloLibs}/utils/utils.js`);
+setConfig({ ...CONFIG, miloLibs });
+if (isSignedInHomepage) acomsisCookieHandler();
+
+decorateArea();
 
 (function loadStyles() {
   const paths = [`${miloLibs}/styles/styles.css`];
@@ -173,8 +187,6 @@ const miloLibs = setLibs(LIBS);
 }());
 
 (async function loadPage() {
-  const { loadArea, setConfig, loadLana } = await import(`${miloLibs}/utils/utils.js`);
-  setConfig({ ...CONFIG, miloLibs });
   loadLana({ clientId: 'cc' });
   await loadArea();
 }());
